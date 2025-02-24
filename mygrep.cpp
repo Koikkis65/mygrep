@@ -82,15 +82,13 @@ int main(int argc, char* argv[]) {
             return 0;
         }
         bool noMatches = true;
-        int lineCount = 0;
         string searchline;
         while(getline(file, searchline)) {
-            lineCount++;
             vector<int> firstchars;
             vector<int> IndexForHit;
             FindWordFromString(firstchars, IndexForHit, searchline, argv[1]);
             if(IndexForHit.size() > 0) {
-                cout << "line: " << lineCount << "  " << searchline << endl;
+                cout << searchline << endl;
                 noMatches = false;
             }
         }
@@ -99,6 +97,52 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    //Increment 3
+    if(argc == 4) {
+        bool lineNumbering = false, Occurences = false;
+        string options = argv[1];
+        if(options == "-olo") {
+            lineNumbering = true;
+            Occurences = true;
+        }
+        else if(options == "-ol") {
+            lineNumbering = true;
+        }
+        else if(options == "-oo") {
+            Occurences = true;
+        }
+
+        ifstream file(argv[3]);
+        if(!file.is_open()) {
+            cout << "The file could not be opened. Please ensure you have a correct file name." << endl;
+            return 0;
+        }
+        bool noMatches = true;
+        int lineCount = 0, OccurencesCount = 0;
+        string searchline;
+        while(getline(file, searchline)) {
+            lineCount++;
+            vector<int> firstchars;
+            vector<int> IndexForHit;
+            FindWordFromString(firstchars, IndexForHit, searchline, argv[2]);
+            if(IndexForHit.size() > 0) {
+                OccurencesCount++;
+                if(lineNumbering) {
+                    cout << "line: " << lineCount << "  " << searchline << endl;
+                }
+                else {
+                    cout << searchline << endl;
+                }
+                noMatches = false;
+            }
+        }
+        if(Occurences) {
+            cout << endl << "Occurences of lines containing \"" << argv[2] << "\": " << OccurencesCount << endl;
+        }
+        if(noMatches) {
+            cout << argv[1] << " NOT found in " << argv[2] << endl;
+        }
+    }
     
     return 0;
 }
