@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -37,13 +38,12 @@ void FindWordFromString(vector<int>& firstchars, vector<int>& IndexForHit, const
 }
 
 int main(int argc, char* argv[]) {
-    
-    vector<int> firstchars;
-    vector<int> IndexForHit;
-    string searchline, searchword;
-
-    //increment 1, the result printing is at the end, and is tailored so that it works for both given lines, and files.
+    //increment 1
     if(argc == 1) {
+        vector<int> firstchars;
+        vector<int> IndexForHit;
+        string searchline, searchword;
+
         cout << "Give a string from which to search for: ";
         getline(cin, searchline);
 
@@ -53,23 +53,52 @@ int main(int argc, char* argv[]) {
         
         FindWordFromString(firstchars, IndexForHit, searchline, searchword);
 
-        
-    }
-
-
-    if(IndexForHit.size() == 0) {
-        if(argc == 1) {
-            cout << searchword << " NOT found in " << searchline;
-        }
-    }
-    else {
-        cout << searchword << " found in position(s): ";
-        for(int i = 0; i < IndexForHit.size(); i++) {
-            if(i != 0) {
-                cout << ", ";
+        if(IndexForHit.size() == 0) {
+            if(argc == 1) {
+                cout << searchword << " NOT found in " << searchline;
             }
-            cout << IndexForHit[i];
+        }
+        else {
+            cout << searchword << " found in position(s): ";
+            for(int i = 0; i < IndexForHit.size(); i++) {
+                if(i != 0) {
+                    cout << ", ";
+                }
+                cout << IndexForHit[i];
+            }
         }
     }
+
+    if(argc == 2) {
+        cout << "You need to either start the application without any arguments, or with two arguments. Ie:" << endl;
+        cout << "./mygrep <characters to find> <ASCII-filename>" << endl;
+    }
+
+    //Increment 2
+    if(argc == 3) {
+        ifstream file(argv[2]);
+        if(!file.is_open()) {
+            cout << "The file could not be opened. Please ensure you have a correct file name." << endl;
+            return 0;
+        }
+        bool noMatches = true;
+        int lineCount = 0;
+        string searchline;
+        while(getline(file, searchline)) {
+            lineCount++;
+            vector<int> firstchars;
+            vector<int> IndexForHit;
+            FindWordFromString(firstchars, IndexForHit, searchline, argv[1]);
+            if(IndexForHit.size() > 0) {
+                cout << "line: " << lineCount << "  " << searchline << endl;
+                noMatches = false;
+            }
+        }
+        if(noMatches) {
+            cout << argv[1] << " NOT found in " << argv[2] << endl;
+        }
+    }
+
+    
     return 0;
 }
