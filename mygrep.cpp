@@ -143,16 +143,20 @@ int main(int argc, char* argv[]) {
         if(noMatches) {
             cout << argv2 << " NOT found in " << argv3 << endl;
         }
-        //Found lines with line numbers
-        else if(!noMatches && lineNumbering) {
+        //Found lines with line numbers and no reverse search
+        else if(!noMatches && lineNumbering && !reverseSearch) {
             cout << "\"" << argv[2] << "\" found in lines: " << endl;
             for(int i = 0; i < stringToPrint.size(); i++) {
                 cout << lineNumbers[i] << "  " << stringToPrint[i] << endl;
             }
         }
-        //Found lines without line numbers
-        else {
+        //Found lines without line numbers and no reverse search
+        else if(!noMatches && !reverseSearch) {
             cout << "\"" << argv[2] << "\" found in lines: " << endl;
+            for(string s : stringToPrint) {
+                cout << s << endl;
+            }
+        } else if(!noMatches && reverseSearch) {
             for(string s : stringToPrint) {
                 cout << s << endl;
             }
